@@ -164,7 +164,6 @@ async function run(): Promise<void> {
           Accept: 'application/octet-stream'
         }
       })
-      core.debug(JSON.stringify(res))
       // @ts-expect-error: Wrong return type
       fs.writeFileSync(asset.name, Buffer.from(res.data))
       const file = fs.readFileSync(asset.name)
