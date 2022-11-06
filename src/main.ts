@@ -33,6 +33,7 @@ enum AuthType {
 type Aptly = {
   url: string
   repo: string
+  dist: string
   dir: string
   user?: string
   pass: string
@@ -63,6 +64,7 @@ function getInputObject(): Inputs {
     repo: core.getInput('aptly-repo', {required: true}),
     dir: core.getInput('aptly-dir', {required: true}),
     pass: core.getInput('aptly-pass', {required: true}),
+    dist: core.getInput('aptly-dist', {required: true}),
     auth
   }
 
@@ -165,7 +167,7 @@ async function run(): Promise<void> {
       form.append('file', file, asset.name)
       await uploadFile(form, inputs.aptly.dir)
       await addFileToRepo(inputs.aptly.repo, inputs.aptly.dir, asset.name)
-      await updatePublishedRepo('jammy')
+      await updatePublishedRepo(inputs.aptly.dist)
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)

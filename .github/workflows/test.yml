@@ -32,3 +32,4 @@ jobs:
           aptly-auth: basic
           aptly-repo: pkger
           aptly-dir: tmp
+          aptly-dist: jammy
