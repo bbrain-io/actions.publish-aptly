@@ -85,7 +85,7 @@ function getInputObject(): Inputs {
 async function createRepo(repo: string): Promise<void> {
   core.info(`Creating repo ${repo}`)
   try {
-    core.debug(await axios.post('/repos', {Name: repo}))
+    await axios.post('/repos', {Name: repo})
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 400) return
     throw error
@@ -94,13 +94,11 @@ async function createRepo(repo: string): Promise<void> {
 
 async function uploadFile(data: FormData, dir: string): Promise<void> {
   core.info(`Uploading file to ${dir}`)
-  core.debug(
-    await axios.post(`/files/${dir}`, data, {
-      headers: {
-        ...data.getHeaders()
-      }
-    })
-  )
+  await axios.post(`/files/${dir}`, data, {
+    headers: {
+      ...data.getHeaders()
+    }
+  })
 }
 
 async function addFileToRepo(
@@ -109,17 +107,14 @@ async function addFileToRepo(
   file: string
 ): Promise<void> {
   core.info(`Adding file ${dir}/${file} to repo ${repo}`)
-  core.debug(
-    await axios.post(`/repos/${repo}/file/${dir}/${file}`, '', {
-      params: {forceReplace: '1'}
-    })
-  )
+  await axios.post(`/repos/${repo}/file/${dir}/${file}`, '', {
+    params: {forceReplace: '1'}
+  })
 }
 
 async function updatePublishedRepo(distribution: string): Promise<void> {
   core.info(`Updating published repo with distribution ${distribution}`)
-  const res = await axios.put(`/publish/:./${distribution}`)
-  core.debug(res.data)
+  await axios.put(`/publish/:./${distribution}`)
 }
 
 async function run(): Promise<void> {

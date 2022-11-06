@@ -94,7 +94,7 @@ function createRepo(repo) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Creating repo ${repo}`);
         try {
-            core.debug(yield axios_1.default.post('/repos', { Name: repo }));
+            yield axios_1.default.post('/repos', { Name: repo });
         }
         catch (error) {
             if (error instanceof axios_1.AxiosError && ((_a = error.response) === null || _a === void 0 ? void 0 : _a.status) === 400)
@@ -106,24 +106,23 @@ function createRepo(repo) {
 function uploadFile(data, dir) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Uploading file to ${dir}`);
-        core.debug(yield axios_1.default.post(`/files/${dir}`, data, {
+        yield axios_1.default.post(`/files/${dir}`, data, {
             headers: Object.assign({}, data.getHeaders())
-        }));
+        });
     });
 }
 function addFileToRepo(repo, dir, file) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Adding file ${dir}/${file} to repo ${repo}`);
-        core.debug(yield axios_1.default.post(`/repos/${repo}/file/${dir}/${file}`, '', {
+        yield axios_1.default.post(`/repos/${repo}/file/${dir}/${file}`, '', {
             params: { forceReplace: '1' }
-        }));
+        });
     });
 }
 function updatePublishedRepo(distribution) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Updating published repo with distribution ${distribution}`);
-        const res = yield axios_1.default.put(`/publish/:./${distribution}`);
-        core.debug(res.data);
+        yield axios_1.default.put(`/publish/:./${distribution}`);
     });
 }
 function run() {
