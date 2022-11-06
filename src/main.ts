@@ -170,9 +170,9 @@ async function run(): Promise<void> {
       const file = fs.readFileSync(asset.name)
       const form = new FormData()
       form.append('file', file, asset.name)
-      uploadFile(form, inputs.aptly.dir)
-      addFileToRepo(inputs.aptly.repo, inputs.aptly.dir, asset.name)
-      updatePublishedRepo('jammy')
+      await uploadFile(form, inputs.aptly.dir)
+      await addFileToRepo(inputs.aptly.repo, inputs.aptly.dir, asset.name)
+      await updatePublishedRepo('jammy')
     }
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
