@@ -1,0 +1,33 @@
+name: "build-test"
+on: # rebuild any PRs and main branch changes
+  pull_request:
+  push:
+    branches:
+      - main
+      - "releases/*"
+
+jobs:
+  build: # make sure build/ci work properly
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          npm install
+      - run: |
+          npm run all
+  test: # make sure the action works on a clean machine without building
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./
+        with:
+          owner: ${{ github.event.inputs.owner }}
+          repo: ${{ github.event.inputs.repo }}
+          release-tag: ${{ github.event.inputs.release-tag }}
+          assets: ${{ github.event.inputs.assets }}
+          aptly-url: ${{ secrets.APTLY_URL }}
+          aptly-user: ${{ secrets.APTLY_USER }}
+          aptly-pass: ${{ secrets.APTLY_PASS }}
+          aptly-auth: ${{ github.event.inputs.aptly-auth }}
+          aptly-repo: ${{ github.event.inputs.aptly-repo }}
+          aptly-dir: ${{ github.event.inputs.aptly-dir }}

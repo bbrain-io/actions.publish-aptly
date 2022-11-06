@@ -1,0 +1,46 @@
+name: "Publishes release asset to aptly"
+description: "Publishes an asset from a specific release, and publishes it to an aptly repository"
+author: "Bbrain"
+
+inputs:
+  owner:
+    description: The repository owner
+    required: true
+  repo:
+    description: The repository name
+    required: true
+  release-tag:
+    description: The release tag to publish
+    required: true
+  assets:
+    description: A list of release asset glob or name to publish
+    required: true
+  aptly-url:
+    description: The aptly API url
+    required: true
+  aptly-repo:
+    description: The aptly repo name
+    required: true
+  aptly-dir:
+    description: The aptly directory name where to upload the asset
+    required: false
+    default: aptly-ci
+  aptly-user:
+    description: The aptly username
+    required: false
+    default: ${{ env.APTLY_USER }}
+  aptly-pass:
+    description: The aptly password or token
+    required: false
+    default: ${{ env.APTLY_PASS }}
+  aptly-auth:
+    description: The type of auth to use (basic/token)
+    required: false
+    default: basic
+  github-token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ github.token }}
+    required: false
+runs:
+  using: "node16"
+  main: "dist/index.js"
