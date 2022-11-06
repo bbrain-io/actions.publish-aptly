@@ -28,11 +28,9 @@ inputs:
   aptly-user:
     description: The aptly username
     required: false
-    default: ${{ env.APTLY_USER }}
   aptly-pass:
     description: The aptly password or token
     required: false
-    default: ${{ env.APTLY_PASS }}
   aptly-auth:
     description: The type of auth to use (basic/token)
     required: false
