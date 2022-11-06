@@ -122,7 +122,8 @@ function addFileToRepo(repo, dir, file) {
 function updatePublishedRepo(distribution) {
     return __awaiter(this, void 0, void 0, function* () {
         core.info(`Updating published repo with distribution ${distribution}`);
-        core.debug(yield axios_1.default.put(`/publish/:./${distribution}`));
+        const res = yield axios_1.default.put(`/publish/:./${distribution}`);
+        core.debug(res.data);
     });
 }
 function run() {
@@ -169,15 +170,14 @@ function run() {
                         Accept: 'application/octet-stream'
                     }
                 });
-                core.debug(JSON.stringify(res));
                 // @ts-expect-error: Wrong return type
                 fs_1.default.writeFileSync(asset.name, Buffer.from(res.data));
                 const file = fs_1.default.readFileSync(asset.name);
                 const form = new form_data_1.default();
                 form.append('file', file, asset.name);
-                uploadFile(form, inputs.aptly.dir);
-                addFileToRepo(inputs.aptly.repo, inputs.aptly.dir, asset.name);
-                updatePublishedRepo('jammy');
+                yield uploadFile(form, inputs.aptly.dir);
+                yield addFileToRepo(inputs.aptly.repo, inputs.aptly.dir, asset.name);
+                yield updatePublishedRepo('jammy');
             }
         }
         catch (error) {
