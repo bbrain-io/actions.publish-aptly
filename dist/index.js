@@ -74,6 +74,7 @@ function getInputObject() {
         repo: core.getInput('aptly-repo', { required: true }),
         dir: core.getInput('aptly-dir', { required: true }),
         pass: core.getInput('aptly-pass', { required: true }),
+        dist: core.getInput('aptly-dist', { required: true }),
         auth
     };
     if (auth === AuthType.basic) {
@@ -175,7 +176,7 @@ function run() {
                 form.append('file', file, asset.name);
                 yield uploadFile(form, inputs.aptly.dir);
                 yield addFileToRepo(inputs.aptly.repo, inputs.aptly.dir, asset.name);
-                yield updatePublishedRepo('jammy');
+                yield updatePublishedRepo(inputs.aptly.dist);
             }
         }
         catch (error) {

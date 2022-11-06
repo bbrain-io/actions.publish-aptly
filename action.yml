@@ -1,5 +1,5 @@
-name: "Publishes release asset to aptly"
-description: "Publishes an asset from a specific release, and publishes it to an aptly repository"
+name: "Publish release asset to aptly"
+description: "Fetches an asset from a specific release, and publishes it to an aptly repository"
 author: "Bbrain"
 
 inputs:
@@ -20,6 +20,9 @@ inputs:
     required: true
   aptly-repo:
     description: The aptly repo name
+    required: true
+  aptly-dist:
+    description: The aptly distribution to update
     required: true
   aptly-dir:
     description: The aptly directory name where to upload the asset
