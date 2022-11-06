@@ -159,7 +159,6 @@ function run() {
             else {
                 axios_1.default.defaults.headers.common = { Authorization: inputs.aptly.pass };
             }
-            core.debug(JSON.stringify(matched_assets));
             yield createRepo('pkger');
             for (const asset of matched_assets) {
                 const res = yield github.rest.repos.getReleaseAsset({

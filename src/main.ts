@@ -152,7 +152,6 @@ async function run(): Promise<void> {
     } else {
       axios.defaults.headers.common = {Authorization: inputs.aptly.pass}
     }
-    core.debug(JSON.stringify(matched_assets))
     await createRepo('pkger')
 
     for (const asset of matched_assets) {
