@@ -83,8 +83,9 @@ function getInputObject(): Inputs {
 }
 
 async function createRepo(repo: string): Promise<void> {
+  core.info(`Creating repo ${repo}`)
   try {
-    await axios.post('/repos', {Name: repo})
+    core.debug(await axios.post('/repos', {Name: repo}))
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 400) return
     throw error
@@ -92,11 +93,14 @@ async function createRepo(repo: string): Promise<void> {
 }
 
 async function uploadFile(data: FormData, dir: string): Promise<void> {
-  await axios.post(`/files/${dir}`, data, {
-    headers: {
-      ...data.getHeaders()
-    }
-  })
+  core.info(`Uploading file to ${dir}`)
+  core.debug(
+    await axios.post(`/files/${dir}`, data, {
+      headers: {
+        ...data.getHeaders()
+      }
+    })
+  )
 }
 
 async function addFileToRepo(
@@ -104,18 +108,23 @@ async function addFileToRepo(
   dir: string,
   file: string
 ): Promise<void> {
-  await axios.post(`/repos/${repo}/file/${dir}/${file}`, '', {
-    params: {forceReplace: '1'}
-  })
+  core.info(`Adding file ${dir}/${file} to repo ${repo}`)
+  core.debug(
+    await axios.post(`/repos/${repo}/file/${dir}/${file}`, '', {
+      params: {forceReplace: '1'}
+    })
+  )
 }
 
 async function updatePublishedRepo(distribution: string): Promise<void> {
-  await axios.put(`/publish/:./${distribution}`)
+  core.info(`Updating published repo with distribution ${distribution}`)
+  core.debug(await axios.put(`/publish/:./${distribution}`))
 }
 
 async function run(): Promise<void> {
   try {
     const inputs: Inputs = getInputObject()
+    core.debug(JSON.stringify(inputs))
     const github = getOctokit(inputs.github_token)
     const release = await github.rest.repos.getReleaseByTag({
       owner: inputs.owner,
@@ -142,7 +151,7 @@ async function run(): Promise<void> {
     } else {
       axios.defaults.headers.common = {Authorization: inputs.aptly.pass}
     }
-    console.log(matched_assets)
+    core.debug(JSON.stringify(matched_assets))
     await createRepo('pkger')
 
     for (const asset of matched_assets) {
@@ -154,6 +163,7 @@ async function run(): Promise<void> {
           Accept: 'application/octet-stream'
         }
       })
+      core.debug(JSON.stringify(res))
       // @ts-expect-error: Wrong return type
       fs.writeFileSync(asset.name, Buffer.from(res.data))
       const file = fs.readFileSync(asset.name)
