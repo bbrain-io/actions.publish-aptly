@@ -92,6 +92,7 @@ function getInputObject() {
 function createRepo(repo) {
     var _a;
     return __awaiter(this, void 0, void 0, function* () {
+        core.info(`Creating repo ${repo}`);
         try {
             yield axios_1.default.post('/repos', { Name: repo });
         }
@@ -104,6 +105,7 @@ function createRepo(repo) {
 }
 function uploadFile(data, dir) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info(`Uploading file to ${dir}`);
         yield axios_1.default.post(`/files/${dir}`, data, {
             headers: Object.assign({}, data.getHeaders())
         });
@@ -111,6 +113,7 @@ function uploadFile(data, dir) {
 }
 function addFileToRepo(repo, dir, file) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info(`Adding file ${dir}/${file} to repo ${repo}`);
         yield axios_1.default.post(`/repos/${repo}/file/${dir}/${file}`, '', {
             params: { forceReplace: '1' }
         });
@@ -118,6 +121,7 @@ function addFileToRepo(repo, dir, file) {
 }
 function updatePublishedRepo(distribution) {
     return __awaiter(this, void 0, void 0, function* () {
+        core.info(`Updating published repo with distribution ${distribution}`);
         yield axios_1.default.put(`/publish/:./${distribution}`);
     });
 }
@@ -125,6 +129,7 @@ function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const inputs = getInputObject();
+            core.debug(JSON.stringify(inputs));
             const github = (0, github_1.getOctokit)(inputs.github_token);
             const release = yield github.rest.repos.getReleaseByTag({
                 owner: inputs.owner,
@@ -153,7 +158,6 @@ function run() {
             else {
                 axios_1.default.defaults.headers.common = { Authorization: inputs.aptly.pass };
             }
-            console.log(matched_assets);
             yield createRepo('pkger');
             for (const asset of matched_assets) {
                 const res = yield github.rest.repos.getReleaseAsset({
@@ -169,9 +173,9 @@ function run() {
                 const file = fs_1.default.readFileSync(asset.name);
                 const form = new form_data_1.default();
                 form.append('file', file, asset.name);
-                uploadFile(form, inputs.aptly.dir);
-                addFileToRepo(inputs.aptly.repo, inputs.aptly.dir, asset.name);
-                updatePublishedRepo('jammy');
+                yield uploadFile(form, inputs.aptly.dir);
+                yield addFileToRepo(inputs.aptly.repo, inputs.aptly.dir, asset.name);
+                yield updatePublishedRepo('jammy');
             }
         }
         catch (error) {
