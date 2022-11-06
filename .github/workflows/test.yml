@@ -21,13 +21,14 @@ jobs:
       - uses: actions/checkout@v3
       - uses: ./
         with:
-          owner: ${{ github.event.inputs.owner }}
-          repo: ${{ github.event.inputs.repo }}
-          release-tag: ${{ github.event.inputs.release-tag }}
-          assets: ${{ github.event.inputs.assets }}
+          owner: bbrain-io
+          repo: PKGBUILD-alacritty
+          release-tag: v0.11.0-2
+          assets: |
+            *.deb
           aptly-url: ${{ secrets.APTLY_URL }}
           aptly-user: ${{ secrets.APTLY_USER }}
           aptly-pass: ${{ secrets.APTLY_PASS }}
-          aptly-auth: ${{ github.event.inputs.aptly-auth }}
-          aptly-repo: ${{ github.event.inputs.aptly-repo }}
-          aptly-dir: ${{ github.event.inputs.aptly-dir }}
+          aptly-auth: basic
+          aptly-repo: pkger
+          aptly-dir: tmp
