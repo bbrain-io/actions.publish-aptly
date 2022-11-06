@@ -118,7 +118,8 @@ async function addFileToRepo(
 
 async function updatePublishedRepo(distribution: string): Promise<void> {
   core.info(`Updating published repo with distribution ${distribution}`)
-  core.debug(await axios.put(`/publish/:./${distribution}`))
+  const res = await axios.put(`/publish/:./${distribution}`)
+  core.debug(res.data)
 }
 
 async function run(): Promise<void> {
